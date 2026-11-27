@@ -1,0 +1,53 @@
+{
+  "users": [
+    {
+      "login": "фф",
+      "pass": "11",
+      "isMaster": true
+    }
+  ],
+  "characters": [
+    {
+      "login": "фф",
+      "name": "аа",
+      "hp": "10",
+      "hpMax": "10",
+      "ac": 10,
+      "level": "1",
+      "xp": "0",
+      "en": "10",
+      "enMax": "10",
+      "stress": "0",
+      "stressMax": "10",
+      "str": "10",
+      "dex": "10",
+      "razum": "10",
+      "abilities": [],
+      "skills": [],
+      "inventory": [
+        {
+          "name": "",
+          "count": "1"
+        },
+        {
+          "name": "",
+          "count": "1"
+        },
+        {
+          "name": "",
+          "count": "1"
+        }
+      ],
+      "equipment": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "description": "",
+      "image": "",
+      "id": "1795540319453"
+    }
+  ],
+  "items": []
+}
