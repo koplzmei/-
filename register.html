@@ -37,10 +37,18 @@
     </div>
 
     <script>
+        // ВСТАВЬТЕ СЮДА ССЫЛКУ НА ВАШУ БАЗУ FIREBASE (без слэша в конце)
+        const DB_URL = 'https://ВАШ-ПРОЕКТ-default-rtdb.europe-west1.firebasedatabase.app'.replace(/\/$/, '');
+
+        function makeKey(str) {
+            return Array.from(new TextEncoder().encode(str.toLowerCase().trim()))
+                .map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
         document.getElementById('reg-btn').addEventListener('click', async () => {
             const login = document.getElementById('reg-login').value.trim();
             const pass = document.getElementById('reg-pass').value;
-            const isMaster = document.getElementById('reg-master').checked; // Проверяем галочку
+            const isMaster = document.getElementById('reg-master').checked;
             const status = document.getElementById('reg-status');
 
             if (!login || !pass) {
@@ -49,20 +57,41 @@
                 return;
             }
 
-            const response = await fetch('/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ login, pass, isMaster }) // Отправляем галочку на сервер
-            });
+            if (DB_URL.includes('ВАШ-ПРОЕКТ')) {
+                status.textContent = 'Не указана ссылка DB_URL в коде!';
+                status.style.color = 'red';
+                return;
+            }
 
-            const data = await response.json();
+            try {
+                const userKey = makeKey(login);
+                const checkRes = await fetch(`${DB_URL}/users/${userKey}.json`);
+                if (!checkRes.ok) throw new Error('Ошибка базы данных');
+                const existing = await checkRes.json();
 
-            if (response.ok) {
-                localStorage.setItem('currentUser', login);
-                localStorage.setItem('isMaster', isMaster); // Запоминаем роль в браузере
-                window.location.href = 'player.html';
-            } else {
-                status.textContent = data.error || 'Ошибка';
+                if (existing) {
+                    status.textContent = 'Занято';
+                    status.style.color = 'red';
+                    return;
+                }
+
+                const createRes = await fetch(`${DB_URL}/users/${userKey}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ login, pass, isMaster })
+                });
+
+                if (createRes.ok) {
+                    localStorage.setItem('currentUser', login);
+                    localStorage.setItem('isMaster', isMaster);
+                    window.location.href = 'player.html';
+                } else {
+                    status.textContent = 'Не удалось создать аккаунт';
+                    status.style.color = 'red';
+                }
+            } catch (err) {
+                console.error(err);
+                status.textContent = 'Ошибка соединения с базой';
                 status.style.color = 'red';
             }
         });
