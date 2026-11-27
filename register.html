@@ -8,7 +8,7 @@
 </head>
 <body>
     <!-- Кнопка Назад -->
-    <a href="/" style="position: absolute; top: 20px; left: 20px; text-decoration: none;">
+    <a href="index.html" style="position: absolute; top: 20px; left: 20px; text-decoration: none;">
         <button style="width: auto; padding: 10px 20px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #555; font-size: 16px; cursor: pointer; border-radius: 6px;">← Назад</button>
     </a>
 
@@ -31,7 +31,7 @@
             <p id="reg-status"></p>
             
             <p style="text-align: center; margin-top: 15px; font-size: 14px;">
-                Уже есть аккаунт? <a href="/login.html">Войти</a>
+                Уже есть аккаунт? <a href="login.html">Войти</a>
             </p>
         </div>
     </div>
@@ -60,7 +60,7 @@
             if (response.ok) {
                 localStorage.setItem('currentUser', login);
                 localStorage.setItem('isMaster', isMaster); // Запоминаем роль в браузере
-                window.location.href = '/player.html';
+                window.location.href = 'player.html';
             } else {
                 status.textContent = data.error || 'Ошибка';
                 status.style.color = 'red';
