@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация в D&D</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Кнопка Назад -->
+    <a href="/" style="position: absolute; top: 20px; left: 20px; text-decoration: none;">
+        <button style="width: auto; padding: 10px 20px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid #555; font-size: 16px; cursor: pointer; border-radius: 6px;">← Назад</button>
+    </a>
+
+    <div class="main-container">
+        <h1>Регистрация</h1>
+        
+        <div class="card">
+            <div class="stats">
+                <label>Логин: <input type="text" id="reg-login" placeholder="Придумайте логин"></label>
+                <label>Пароль: <input type="password" id="reg-pass" placeholder="Придумайте пароль"></label>
+                
+                <!-- Галочка для админа -->
+                <label style="justify-content: flex-start; gap: 10px; margin-top: 10px; cursor: pointer;">
+                    <input type="checkbox" id="reg-master" style="width: 20px; height: 20px; cursor: pointer;">
+                    Я Мастер (Админ)
+                </label>
+            </div>
+            
+            <button id="reg-btn">Создать аккаунт</button>
+            <p id="reg-status"></p>
+            
+            <p style="text-align: center; margin-top: 15px; font-size: 14px;">
+                Уже есть аккаунт? <a href="/login.html">Войти</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('reg-btn').addEventListener('click', async () => {
+            const login = document.getElementById('reg-login').value.trim();
+            const pass = document.getElementById('reg-pass').value;
+            const isMaster = document.getElementById('reg-master').checked; // Проверяем галочку
+            const status = document.getElementById('reg-status');
+
+            if (!login || !pass) {
+                status.textContent = 'Заполните все поля!';
+                status.style.color = 'red';
+                return;
+            }
+
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ login, pass, isMaster }) // Отправляем галочку на сервер
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('currentUser', login);
+                localStorage.setItem('isMaster', isMaster); // Запоминаем роль в браузере
+                window.location.href = '/player.html';
+            } else {
+                status.textContent = data.error || 'Ошибка';
+                status.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>
